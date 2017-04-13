@@ -36,9 +36,21 @@ class ViewController: UIViewController {
         bottomImageView.tag = 3
     }
     
-    func save() {
+    @IBAction func clearImagesCache(_ sender: Any) {
+        let fileManager = FileManager.default
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let documentPath = documentsURL.path
         
+        do {
+            let files = try fileManager.contentsOfDirectory(atPath: "\(documentPath)")
+            for file in files {
+                try fileManager.removeItem(atPath: "\(documentPath)/\(file)")
+            }
+        } catch {
+            print("could not clear cache")
+        }
     }
+    
 
 }
 

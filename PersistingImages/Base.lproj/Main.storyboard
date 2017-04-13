@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -38,13 +39,28 @@
                                     </imageView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RSa-BT-cUO">
+                                <rect key="frame" x="0.0" y="600.5" width="375" height="66.5"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.25014334862385323" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <state key="normal" title="CLEAR IMAGES">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="clearImagesCache:" destination="BYZ-38-t0r" eventType="touchUpInside" id="t6i-SY-Hz4"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="RSa-BT-cUO" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="4Tl-kw-N5n"/>
+                            <constraint firstItem="RSa-BT-cUO" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="7L7-je-oNb"/>
                             <constraint firstItem="Kfd-QZ-ZtA" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="8uW-Sg-gWI"/>
                             <constraint firstItem="Kfd-QZ-ZtA" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="AIz-SJ-9NP"/>
                             <constraint firstItem="Kfd-QZ-ZtA" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="DmT-56-5fg"/>
                             <constraint firstItem="Kfd-QZ-ZtA" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="J5g-Pr-wXF"/>
+                            <constraint firstItem="RSa-BT-cUO" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.1" id="vtY-ex-I1o"/>
+                            <constraint firstItem="RSa-BT-cUO" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="w5d-Qd-CYL"/>
                         </constraints>
                     </view>
                     <connections>
