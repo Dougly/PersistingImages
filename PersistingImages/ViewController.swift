@@ -55,13 +55,6 @@ class ViewController: UIViewController {
 }
 
 
-
-
-
-
-
-
-
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func tappedImage(_ sender: UITapGestureRecognizer) {
@@ -193,10 +186,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         }
     }
     
-   
-    
-    
-    
+
 }
 
 
