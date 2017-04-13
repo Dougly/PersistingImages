@@ -7,9 +7,12 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController {
     var selectedImageTag = 0
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+
 
     @IBOutlet weak var topImageView: UIImageView!
     @IBOutlet weak var middleImageView: UIImageView!
@@ -18,6 +21,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addTapGestures()
+        fetchData()
     }
     
     func addTapGestures() {
@@ -30,6 +34,10 @@ class ViewController: UIViewController {
         let tapGR2 = UITapGestureRecognizer(target: self, action: #selector(tappedImage))
         bottomImageView.addGestureRecognizer(tapGR2)
         bottomImageView.tag = 3
+    }
+    
+    func save() {
+        
     }
 
 }
@@ -78,63 +86,107 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         case 3: bottomImageView.image = image
         default: break
         }
-    }
-    
-    
-//    func saveImage() {
-//        let tag = "placeholderTag"
-//        if validation(with: tag) { return }
-//        
-//        if let image = createPlayerView.playerPictureImageView.image {
-//            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-//            let fileURL = documentsURL.appendingPathComponent("\(firstName + lastName + tag).png")
-//            
-//            do {
-//                if let pngImageData = UIImagePNGRepresentation(image) {
-//                    print("try write image data")
-//                    try pngImageData.write(to: fileURL, options: .atomic)
-//                }
-//            } catch {
-//                print("couldnt write to file")
-//            }
-//            store.savePlayer(firstName, lastName: lastName, tag: tag, file: "\(firstName + lastName + tag).png")
-//        } else {
-//            store.savePlayer(firstName, lastName: lastName, tag: tag, file: "\(firstName + lastName + tag).png")
-//        }
-//        
-//        
-//        self.blurDelegate?.unBlurView()
-//        self.dismiss(animated: true, completion: {
-//            if let delegate = self.delegate {
-//                delegate.reloadCollectionView(withPlayer: tag)
-//            }
-//        })
-//    }
-    
-    
-    func validation(with tag: String) -> Bool {
         
-        //prevents crash if a png already exists
+        // Save imageData to filePath
+        
+        // Get access to shared instance of the file manager
         let fileManager = FileManager.default
-        let documentsURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // Get the URL for the users home directory
+        let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // Get the document URL as a string
         let documentPath = documentsURL.path
-        let filePath = documentsURL.appendingPathComponent("\(tag).png").path
+        
+        // Create filePath URL by appending final path component (name of image)
+        let filePath = documentsURL.appendingPathComponent("\(String(selectedImageTag)).png")
+        
+        
+        // Check for existing image data
         do {
+            // Look through array of files in documentDirectory
             let files = try fileManager.contentsOfDirectory(atPath: "\(documentPath)")
+            
             for file in files {
-                if "\(documentPath)/\(file)" == filePath {
-                    print("did not save - found pre-existing png file")
-                    return false
+                // If we find existing image filePath delete it to make way for new imageData
+                if "\(documentPath)/\(file)" == filePath.path {
+                    try fileManager.removeItem(atPath: filePath.path)
                 }
             }
         } catch {
             print("Could not add image from document directory: \(error)")
         }
-        return true
+
+        
+        // Create imageData and write to filePath
+        do {
+            if let pngImageData = UIImagePNGRepresentation(image) {
+                try pngImageData.write(to: filePath, options: .atomic)
+            }
+        } catch {
+            print("couldn't write image")
+        }
+
+        // Save filePath and imagePlacement to CoreData
+        let container = appDelegate.persistentContainer
+        let context = container.viewContext
+        let entity = Image(context: context)
+        entity.filePath = filePath.path
+        
+        switch selectedImageTag {
+        case 1: entity.placement = "top"
+        case 2: entity.placement = "middle"
+        case 3: entity.placement = "bottom"
+        default:
+            break
+        }
+        appDelegate.saveContext()
+
+    
     }
+    
+    
+    func fetchData() {
+        // Set up fetch request
+        let container = appDelegate.persistentContainer
+        let context = container.viewContext
+        let fetchRequest = NSFetchRequest<Image>(entityName: "Image")
+        
+        do {
+            // Retrive array of all image entities in core data
+            let images = try context.fetch(fetchRequest)
+            
+            // For each image entity get the imageData from filepath and assign it to image view
+            for image in images {
+                
+                if let placement = image.placement,
+                    let filePath = image.filePath {
+                    
+                    // Retrive image data from filepath and convert it to UIImage
+                    if FileManager.default.fileExists(atPath: filePath) {
+                        
+                        if let contentsOfFilePath = UIImage(contentsOfFile: filePath) {
+                            switch placement {
+                            case "top": topImageView.image = contentsOfFilePath
+                            case "middle": middleImageView.image = contentsOfFilePath
+                            case "bottom": bottomImageView.image = contentsOfFilePath
+                            default: break
+                            }
+                        }
+                    }
+                }
+            }
+        } catch {
+            print("entered catch for image fetch request")
+        }
+    }
+    
+   
     
     
     
 }
+
+
 
 
